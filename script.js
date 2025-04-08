@@ -35,6 +35,42 @@ const orientationMessage = document.getElementById("orientation-message");
 // Load sounds
 const cuttingSoundElement = document.getElementById("cutting-sound");
 
+// Fullscreen button
+const fullscreenBtn = document.createElement('button');
+fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+fullscreenBtn.id = 'fullscreen-btn';
+fullscreenBtn.className = 'hud-element';
+document.getElementById('game-container').appendChild(fullscreenBtn);
+
+// Fullscreen functions
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(err => {
+      console.error(`Error attempting to enable fullscreen: ${err.message}`);
+    });
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+}
+
+// Update fullscreen button icon
+function updateFullscreenIcon() {
+  const icon = fullscreenBtn.querySelector('i');
+  if (document.fullscreenElement) {
+    icon.classList.remove('fa-expand');
+    icon.classList.add('fa-compress');
+  } else {
+    icon.classList.remove('fa-compress');
+    icon.classList.add('fa-expand');
+  }
+}
+
+// Add fullscreen event listeners
+document.addEventListener('fullscreenchange', updateFullscreenIcon);
+fullscreenBtn.addEventListener('click', toggleFullscreen);
+
 // Initialize sound based on localStorage preference if available
 if (localStorage.getItem('fruitCutterSoundEnabled') === 'false') {
   soundEnabled = false;
@@ -463,12 +499,13 @@ function init() {
   fruits = [];
   knife.trail = [];
   fruitSpawnTimer = 0;
-  gameStarted = true; // Always start the game immediately
+  gameStarted = true;
   
   scoreElement.textContent = `Score: ${score}`;
   gameOverElement.classList.add('hidden');
   
-  // No more start message handling needed
+  // Check if device is mobile
+  isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   
   // Check orientation
   checkOrientation();

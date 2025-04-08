@@ -53,6 +53,61 @@
         font-size: 20px !important;
         padding: 10px 20px !important;
       }
+
+      #fullscreen-btn {
+        width: 30px !important;
+        height: 30px !important;
+        padding: 5px !important;
+      }
+
+      #fullscreen-btn i {
+        font-size: 20px !important;
+      }
+    }
+
+    /* Fullscreen button styles */
+    #fullscreen-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      z-index: 100;
+      padding: 8px;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    #fullscreen-btn:hover {
+      background-color: rgba(0, 0, 0, 0.5);
+      transform: scale(1.1);
+    }
+
+    #fullscreen-btn:active {
+      transform: scale(0.95);
+    }
+
+    #fullscreen-btn i {
+      font-size: 24px;
+    }
+
+    /* Fullscreen styles */
+    :fullscreen #game-container {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    :-webkit-full-screen #game-container {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    :-moz-full-screen #game-container {
+      width: 100vw;
+      height: 100vh;
     }
   </style>
 </head>
