@@ -13,7 +13,7 @@ let knife = { x: 0, y: 0, trail: [] };
 let lastFrameTime = 0;
 let fruitSpawnTimer = 0;
 const fruitSpawnInterval = 1800; // Adjusted from 2000ms to 1800ms due to reduced bomb rate
-let gameStarted = false;
+let gameStarted = true; // Changed to true to start game immediately
 let isMobile = false;
 let soundEnabled = true;
 let isPortrait = false;
@@ -24,8 +24,6 @@ const livesElement = document.getElementById("lives");
 const gameOverElement = document.getElementById("game-over");
 const finalScoreElement = document.getElementById("final-score");
 const restartBtn = document.getElementById("restart-btn");
-const startMessageElement = document.getElementById("start-message");
-const startActionText = document.getElementById("start-action-text");
 const soundToggleElement = document.getElementById("sound-toggle");
 const soundIcon = soundToggleElement.querySelector("i");
 const orientationMessage = document.getElementById("orientation-message");
@@ -401,11 +399,8 @@ function updateKnifePosition(x, y) {
     return;
   }
   
-  // Start the game when knife movement is detected
-  if (!gameStarted) {
-    gameStarted = true;
-    startMessageElement.classList.add('hidden');
-  }
+  // No need to check for game start anymore since it starts automatically
+  // Just keep the knife position tracking
 
   knife.x = x;
   knife.y = y;
@@ -460,22 +455,12 @@ function init() {
   fruits = [];
   knife.trail = [];
   fruitSpawnTimer = 0;
-  gameStarted = false;
+  gameStarted = true; // Always start the game immediately
   
   scoreElement.textContent = `Score: ${score}`;
   gameOverElement.classList.add('hidden');
   
-  // Don't show start message if in portrait on mobile
-  if (!(isMobile && isPortrait)) {
-    startMessageElement.classList.remove('hidden');
-  }
-  
-  // Update start instruction for mobile
-  if (isMobile) {
-    startActionText.textContent = "Swipe to Start!";
-  } else {
-    startActionText.textContent = "Move Mouse to Start!";
-  }
+  // No more start message handling needed
   
   // Check orientation
   checkOrientation();
