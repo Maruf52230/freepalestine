@@ -2,9 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="HandheldFriendly" content="true">
+  <meta name="format-detection" content="telephone=no">
   <title>Game Landing Page</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #0f0f0f;
@@ -13,17 +21,23 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
+      padding: 20px;
+      text-align: center;
     }
 
     .hashtags {
-      font-size: 2rem;
+      font-size: clamp(1.5rem, 5vw, 2rem);
       margin-bottom: 40px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
     }
 
     .hashtags span {
-      margin: 0 10px;
+      margin: 0 5px;
       color: #00bfff;
     }
 
@@ -32,6 +46,8 @@
       flex-direction: column;
       gap: 20px;
       align-items: center;
+      width: 100%;
+      max-width: 400px;
     }
 
     button {
@@ -40,20 +56,32 @@
       padding: 15px 25px;
       border-radius: 30px;
       color: white;
-      font-size: 1.1rem;
+      font-size: clamp(1rem, 4vw, 1.1rem);
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      width: 100%;
+      max-width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      touch-action: manipulation;
     }
 
     button:hover {
       background-color: #cc0000;
     }
+    
+    button:active {
+      transform: scale(0.98);
+    }
 
     .facebook-button {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       background-color: #000000;
+      flex-wrap: wrap;
     }
 
     .avatar {
@@ -62,6 +90,21 @@
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid white;
+      flex-shrink: 0;
+    }
+    
+    @media (max-width: 480px) {
+      .hashtags {
+        margin-bottom: 30px;
+      }
+      
+      button {
+        padding: 12px 20px;
+      }
+      
+      .facebook-button span {
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
@@ -76,7 +119,7 @@
     <button onclick="visitWebsite()" style="background-color: #ffffff; color: #000000;">Visit My Website</button>
     <button class="facebook-button" onclick="connectFacebook()">
       <img src="maruf.jpg" alt="Avatar" class="avatar" />
-      Connect with my Facebook (Sayed Maruf)
+      <span>Connect with my Facebook (Sayed Maruf)</span>
     </button>
   </div>
 
@@ -86,12 +129,26 @@
     }
 
     function visitWebsite() {
-      window.open('https://maruf52230.github.io/sayed_maruf/', '_blank'); // replace with your actual website
+      window.open('https://maruf52230.github.io/sayed_maruf/', '_blank');
     }
 
     function connectFacebook() {
       window.open('https://www.facebook.com/sayedmarufmd', '_blank');
     }
+    
+    // Add touch event handling to improve mobile responsiveness
+    document.addEventListener('DOMContentLoaded', function() {
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(button => {
+        button.addEventListener('touchstart', function() {
+          this.style.transform = 'scale(0.98)';
+        });
+        
+        button.addEventListener('touchend', function() {
+          this.style.transform = 'scale(1)';
+        });
+      });
+    });
   </script>
 
 </body>
