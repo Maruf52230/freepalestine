@@ -7,9 +7,54 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="theme-color" content="#000000">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="format-detection" content="telephone=no">
   <title>Cut The Killer</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <style>
+    /* Mobile-specific styles */
+    @media screen and (max-width: 768px) {
+      #game-container {
+        touch-action: none;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      
+      .hud-element {
+        font-size: 16px !important;
+        padding: 5px 10px !important;
+      }
+      
+      #sound-toggle {
+        width: 30px !important;
+        height: 30px !important;
+      }
+      
+      #sound-toggle i {
+        font-size: 20px !important;
+      }
+      
+      #game-over {
+        width: 90% !important;
+        padding: 20px !important;
+      }
+      
+      #game-over h2 {
+        font-size: 36px !important;
+      }
+      
+      #game-over p {
+        font-size: 24px !important;
+      }
+      
+      #restart-btn {
+        font-size: 20px !important;
+        padding: 10px 20px !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="game-container">

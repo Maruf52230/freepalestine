@@ -18,6 +18,10 @@ let isMobile = false;
 let soundEnabled = true;
 let isPortrait = false;
 
+// Size adjustments for mobile
+const FRUIT_SIZE_MULTIPLIER = 0.75; // Changed to 75% of original size
+const KNIFE_SIZE_MULTIPLIER = 0.75; // Changed to 75% of original size
+
 // DOM elements
 const scoreElement = document.getElementById("score");
 const livesElement = document.getElementById("lives");
@@ -219,15 +223,15 @@ class Fruit {
   constructor(type) {
     this.type = type;
     this.isBomb = type === 'bomb';
-    this.width = this.isBomb ? 180 : 240; // 3x larger (was 60/80)
-    this.height = this.isBomb ? 180 : 240; // 3x larger (was 60/80)
+    this.width = this.isBomb ? 60 * FRUIT_SIZE_MULTIPLIER : 80 * FRUIT_SIZE_MULTIPLIER; // Reduced to 60% of original size
+    this.height = this.isBomb ? 60 * FRUIT_SIZE_MULTIPLIER : 80 * FRUIT_SIZE_MULTIPLIER; // Reduced to 60% of original size
     this.x = Math.random() * (canvas.width - this.width);
     this.y = canvas.height + this.height;
-    this.velocityX = (Math.random() - 0.5) * 12; // Increased for better movement with larger fruits
-    this.velocityY = -25 - Math.random() * 15; // Increased for better jump height
+    this.velocityX = (Math.random() - 0.5) * 4;
+    this.velocityY = -15 - Math.random() * 5;
     this.gravity = 0.5;
     this.rotation = 0;
-    this.rotationSpeed = (Math.random() - 0.5) * 0.1; // Reduced for better visual at larger size
+    this.rotationSpeed = (Math.random() - 0.5) * 0.1;
     this.sliced = false;
     this.removeTimer = 0;
     this.splashTimer = 0;
@@ -262,7 +266,7 @@ class Fruit {
     // Adjust coconut properties if needed
     if (this.type === 'coconut') {
       // Coconut has higher velocity (harder to cut)
-      this.velocityY = -30 - Math.random() * 15;
+      this.velocityY = -20 - Math.random() * 5;
       // Coconut gives more points when cut
       this.pointValue = 20;
     } else {
@@ -376,7 +380,7 @@ class Fruit {
       if (this.splashTimer < 300) {
         ctx.save();
         ctx.translate(this.splashX, this.splashY);
-        const splashSize = 240; // 3x larger (was 80)
+        const splashSize = 80 * FRUIT_SIZE_MULTIPLIER; // Reduced to 60% of original size
         ctx.globalAlpha = 1 - this.splashTimer / 300;
         ctx.drawImage(
           splashImage, 
@@ -399,8 +403,12 @@ function updateKnifePosition(x, y) {
     return;
   }
   
-  // No need to check for game start anymore since it starts automatically
-  // Just keep the knife position tracking
+  // Adjust position for mobile touch
+  if (isMobile) {
+    const rect = canvas.getBoundingClientRect();
+    x = x - rect.left;
+    y = y - rect.top;
+  }
 
   knife.x = x;
   knife.y = y;
@@ -689,13 +697,12 @@ function sliceFruit(fruit) {
 
 // Draw knife
 function drawKnife() {
-  // Draw knife at current position
-  const knifeSize = 180; // 3x larger (was 60)
+  const knifeSize = isMobile ? 60 * KNIFE_SIZE_MULTIPLIER : 60;
   ctx.drawImage(
-    knifeImage, 
-    knife.x - knifeSize / 2, 
-    knife.y - knifeSize / 2, 
-    knifeSize, 
+    knifeImage,
+    knife.x - knifeSize / 2,
+    knife.y - knifeSize / 2,
+    knifeSize,
     knifeSize
   );
 }
@@ -716,16 +723,19 @@ function restartGame() {
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  isMobile = checkMobile();
-  checkOrientation();
+  
+  // Adjust HUD elements for mobile
+  if (isMobile) {
+    scoreElement.style.fontSize = '16px';
+    livesElement.style.fontSize = '16px';
+    soundToggleElement.style.width = '30px';
+    soundToggleElement.style.height = '30px';
+  }
 }
 
-window.addEventListener('resize', function() {
-  resizeCanvas();
-});
-
+window.addEventListener('resize', resizeCanvas);
 window.addEventListener('orientationchange', function() {
-  setTimeout(checkOrientation, 300); // Short delay to ensure orientation has changed
+  setTimeout(resizeCanvas, 100);
 });
 
 // Start the game
