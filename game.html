@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Fruit Cutter Game</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="gameCanvas"></canvas>
+    
+    <!-- Game HUD -->
+    <div id="score" class="hud-element">Score: 0</div>
+    <div id="lives" class="hud-element"></div>
+    
+    <!-- Sound Toggle -->
+    <div id="sound-toggle">
+      <i class="fas fa-volume-up"></i>
+    </div>
+    
+    <!-- Game Over Screen -->
+    <div id="game-over" class="hidden">
+      <h2>Game Over</h2>
+      <p>Your Score: <span id="final-score">0</span></p>
+      <button id="restart-btn">
+        <i class="fas fa-redo-alt"></i> Play Again
+      </button>
+    </div>
+    
+    <!-- Start Screen -->
+    <div id="start-message">
+      <h2>Fruit Cutter</h2>
+      <p>Slice fruits to score points! Each coconut is worth 20 points.</p>
+      <p class="danger">
+        <i class="fas fa-bomb"></i> WARNING: 25% bombs!
+      </p>
+      <div class="start-instruction">
+        <i class="fas fa-hand-pointer"></i> <span id="start-action-text">Move to Start</span>
+      </div>
+    </div>
+    
+    <!-- Orientation Warning (Shows only on mobile in portrait) -->
+    <div id="orientation-message" class="hidden">
+      <i class="fas fa-mobile-alt"></i>
+      <p>For best experience, please rotate your device</p>
+    </div>
+  </div>
+  
+  <!-- Preload audio files -->
+  <audio id="cutting-sound" src="cutting_voice.wav" preload="auto"></audio>
+  
+  <script src="script.js"></script>
+</body>
+</html> 
+ 

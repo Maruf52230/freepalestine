@@ -1,0 +1,257 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: 'Cinzel', serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+}
+
+.intro-container {
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    perspective: 400px;
+    overflow: hidden;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+    opacity: 0.3;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.blood-text {
+    color: #cc0000;
+    text-shadow: 0 0 8px rgba(219, 0, 0, 0.6);
+}
+
+.logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 2s ease;
+}
+
+.logo h1 {
+    font-size: 5rem;
+    letter-spacing: 0.5rem;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+}
+
+.scroll-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    overflow: hidden;
+    transform-origin: 50% 100%;
+    transform: perspective(300px) rotateX(0deg);
+    opacity: 1;
+}
+
+.crawl-text {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: 0 20%;
+    transform: translateY(100%);
+}
+
+.crawl-text h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.crawl-text h3 {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+.crawl-text p {
+    font-size: 1.5rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    letter-spacing: 0.1rem;
+}
+
+.image-container {
+    margin: 4rem 0;
+    text-align: center;
+}
+
+.intro-image {
+    max-width: 80%;
+    height: auto;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgba(182, 0, 0, 0.719);
+    opacity: 0.8;
+    transition: all 0.5s ease;
+}
+
+.intro-image:hover {
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(139, 0, 0, 0.8);
+}
+
+.creator-image-container {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.creator-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #8B0000;
+    box-shadow: 0 0 25px rgba(139, 0, 0, 0.8);
+    transition: all 0.5s ease;
+}
+
+.creator-image:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 35px rgba(139, 0, 0, 1);
+}
+
+.skip-button, .start-button {
+    position: absolute;
+    z-index: 30;
+    padding: 0.5rem 1.5rem;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.skip-button:hover, .start-button:hover {
+    background-color: rgba(139, 0, 0, 0.7);
+    transform: scale(1.05);
+}
+
+.skip-button {
+    top: 2rem;
+    right: 2rem;
+    display: none;
+    background-color: rgba(139, 0, 0, 0.8);
+    color: white;
+    font-weight: bold;
+    z-index: 100;
+    cursor: pointer;
+    border: 2px solid white;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+}
+
+.skip-button:hover {
+    background-color: rgba(139, 0, 0, 1);
+    transform: scale(1.1);
+}
+
+.start-button {
+    display: none;
+    bottom: 4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2rem;
+    padding: 1rem 2rem;
+}
+
+/* Animations */
+@keyframes scrollText {
+    0% {
+        transform: translateY(100%);
+    }
+    100% {
+        transform: translateY(-500%);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* Animation Classes */
+.animate-scroll {
+    animation: scrollText 300s linear forwards;
+}
+
+.animate-fade-in {
+    animation: fadeIn 2s forwards;
+}
+
+.animate-fade-out {
+    animation: fadeOut 2s forwards;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .logo h1 {
+        font-size: 3rem;
+    }
+    
+    .crawl-text {
+        padding: 0 10%;
+    }
+    
+    .crawl-text h2 {
+        font-size: 2rem;
+    }
+    
+    .crawl-text h3 {
+        font-size: 1.8rem;
+    }
+    
+    .crawl-text p {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo h1 {
+        font-size: 2rem;
+    }
+    
+    .crawl-text h2 {
+        font-size: 1.5rem;
+    }
+    
+    .crawl-text h3 {
+        font-size: 1.3rem;
+    }
+    
+    .crawl-text p {
+        font-size: 1rem;
+    }
+} 

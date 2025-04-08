@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Game Landing Page</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .hashtags {
+      font-size: 2rem;
+      margin-bottom: 40px;
+    }
+
+    .hashtags span {
+      margin: 0 10px;
+      color: #00bfff;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+    button {
+      background-color: #ff0000;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 30px;
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #cc0000;
+    }
+
+    .facebook-button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: #000000;
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hashtags">
+    <span>#comedown</span><span>#gowithme</span>
+  </div>
+
+  <div class="button-container">
+    <button onclick="startGame()">Start the Game</button>
+    <button onclick="visitWebsite()" style="background-color: #ffffff; color: #000000;">Visit My Website</button>
+    <button class="facebook-button" onclick="connectFacebook()">
+      <img src="maruf.jpg" alt="Avatar" class="avatar" />
+      Connect with my Facebook (Sayed Maruf)
+    </button>
+  </div>
+
+  <script>
+    function startGame() {
+      window.location.href = 'game.html';
+    }
+
+    function visitWebsite() {
+      window.open('https://yourwebsite.com', '_blank'); // replace with your actual website
+    }
+
+    function connectFacebook() {
+      window.open('https://www.facebook.com/sayedmarufmd', '_blank');
+    }
+  </script>
+
+</body>
+</html>

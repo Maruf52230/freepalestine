@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fruit Cutter Game Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+    }
+    .test-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    .image-test {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .image-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid #ddd;
+      padding: 10px;
+      background-color: #f9f9f9;
+    }
+    .image-item img {
+      max-width: 100px;
+      max-height: 100px;
+      object-fit: contain;
+    }
+    .image-item p {
+      margin: 5px 0 0;
+      font-size: 12px;
+      text-align: center;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+    .failure {
+      color: red;
+      font-weight: bold;
+    }
+    .start-game {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .start-game:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>Fruit Cutter Game Test</h1>
+
+  <div class="test-container">
+    <h2>Testing Images</h2>
+    <div class="image-test" id="fruit-images">
+      <!-- Fruit Images -->
+      <div class="image-item">
+        <img src="images/apple.png" alt="Apple">
+        <p>apple.png</p>
+      </div>
+      <div class="image-item">
+        <img src="images/apple_half_1.png" alt="Apple Half 1">
+        <p>apple_half_1.png</p>
+      </div>
+      <div class="image-item">
+        <img src="images/apple_half_2.png" alt="Apple Half 2">
+        <p>apple_half_2.png</p>
+      </div>
+      
+      <div class="image-item">
+        <img src="images/orange.png" alt="Orange">
+        <p>orange.png</p>
+      </div>
+      <div class="image-item">
+        <img src="images/orange_half_1.png" alt="Orange Half 1">
+        <p>orange_half_1.png</p>
+      </div>
+      <div class="image-item">
+        <img src="images/orange_half_2.png" alt="Orange Half 2">
+        <p>orange_half_2.png</p>
+      </div>
+      
+      <div class="image-item">
+        <img src="images/watermalon.png" alt="Watermelon">
+        <p>watermalon.png</p>
+      </div>
+      <div class="image-item">
+        <img src="images/watermalon_half_1.png" alt="Watermelon Half 1">
+        <p>watermalon_half_1.png</p>
+      </div>
+      <div class="image-item">
+        <img src="images/watermalon_half_2.png" alt="Watermelon Half 2">
+        <p>watermalon_half_2.png</p>
+      </div>
+      
+      <div class="image-item">
+        <img src="images/pineapple.png" alt="Pineapple">
+        <p>pineapple.png</p>
+      </div>
+      <div class="image-item">
+        <img src="images/pineapple_half_1.png" alt="Pineapple Half 1">
+        <p>pineapple_half_1.png</p>
+      </div>
+      <div class="image-item">
+        <img src="images/pineapple_half_2.png" alt="Pineapple Half 2">
+        <p>pineapple_half_2.png</p>
+      </div>
+      
+      <!-- Special Images -->
+      <div class="image-item">
+        <img src="images/bomb.png" alt="Bomb">
+        <p>bomb.png</p>
+      </div>
+      <div class="image-item">
+        <img src="images/splash.png" alt="Splash">
+        <p>splash.png</p>
+      </div>
+      <div class="image-item">
+        <img src="images/knife.png" alt="Knife">
+        <p>knife.png</p>
+      </div>
+      <div class="image-item">
+        <img src="images/heart.png" alt="Heart">
+        <p>heart.png</p>
+      </div>
+      <div class="image-item">
+        <img src="images/background.png" alt="Background">
+        <p>background.png</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="test-container">
+    <h2>Game Files</h2>
+    <ul>
+      <li>index.html <span id="html-status"></span></li>
+      <li>style.css <span id="css-status"></span></li>
+      <li>script.js <span id="js-status"></span></li>
+    </ul>
+  </div>
+
+  <button class="start-game" onclick="window.location.href='index.html'">Start Game</button>
+
+  <script>
+    // Test file existence
+    function testFileExists(url, elementId) {
+      fetch(url)
+        .then(response => {
+          if (response.ok) {
+            document.getElementById(elementId).textContent = '✓';
+            document.getElementById(elementId).className = 'success';
+          } else {
+            document.getElementById(elementId).textContent = '✗';
+            document.getElementById(elementId).className = 'failure';
+          }
+        })
+        .catch(() => {
+          document.getElementById(elementId).textContent = '✗';
+          document.getElementById(elementId).className = 'failure';
+        });
+    }
+
+    // Check image loading
+    document.querySelectorAll('.image-item img').forEach(img => {
+      img.onerror = function() {
+        this.parentNode.style.borderColor = 'red';
+        const p = this.nextElementSibling;
+        p.innerHTML = p.innerHTML + ' <span class="failure">Failed</span>';
+      };
+      img.onload = function() {
+        this.parentNode.style.borderColor = 'green';
+        const p = this.nextElementSibling;
+        p.innerHTML = p.innerHTML + ' <span class="success">Loaded</span>';
+      };
+    });
+
+    // Test game files
+    testFileExists('index.html', 'html-status');
+    testFileExists('style.css', 'css-status');
+    testFileExists('script.js', 'js-status');
+  </script>
+</body>
+</html> 
