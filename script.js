@@ -17,6 +17,7 @@ let gameStarted = false;
 let gamePaused = true;
 let isMobile = false;
 let soundEnabled = true;
+let gameLoopRunning = false; // Add flag to track if game loop is running
 
 // Size adjustments for mobile
 const FRUIT_SIZE_MULTIPLIER = 1.8;
@@ -394,8 +395,51 @@ restartBtn.addEventListener("touchend", function(e) {
   restartGame();
 }, { passive: false });
 
+// Initialize game
+function init() {
+  // Stop any existing game loop
+  if (gameLoopRunning) {
+    gameLoopRunning = false;
+    setTimeout(() => {
+      startNewGame();
+    }, 100);
+  } else {
+    startNewGame();
+  }
+}
+
+function startNewGame() {
+  score = 0;
+  lives = 4;
+  gameOver = false;
+  fruits = [];
+  knife.trail = [];
+  fruitSpawnTimer = 0;
+  gameStarted = false;
+  gamePaused = true;
+  lastFrameTime = 0;
+  gameLoopRunning = true;
+  
+  scoreElement.textContent = `Score: ${score}`;
+  gameOverElement.classList.add('hidden');
+  startScreen.classList.remove('hidden');
+  
+  // Check if device is mobile
+  isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Ensure canvas is properly sized
+  resizeCanvas();
+  
+  initializeLives();
+  
+  // Start game loop
+  requestAnimationFrame(gameLoop);
+}
+
 // Main game loop
 function gameLoop(timestamp) {
+  if (!gameLoopRunning) return;
+  
   // Calculate time delta
   const deltaTime = timestamp - lastFrameTime;
   lastFrameTime = timestamp;
@@ -448,34 +492,9 @@ function gameLoop(timestamp) {
   drawKnife();
   
   // Continue game loop
-  requestAnimationFrame(gameLoop);
-}
-
-// Initialize game
-function init() {
-  score = 0;
-  lives = 4;
-  gameOver = false;
-  fruits = [];
-  knife.trail = [];
-  fruitSpawnTimer = 0;
-  gameStarted = false;
-  gamePaused = true;
-  
-  scoreElement.textContent = `Score: ${score}`;
-  gameOverElement.classList.add('hidden');
-  startScreen.classList.remove('hidden');
-  
-  // Check if device is mobile
-  isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  
-  // Ensure canvas is properly sized
-  resizeCanvas();
-  
-  initializeLives();
-  
-  // Start game loop
-  requestAnimationFrame(gameLoop);
+  if (gameLoopRunning) {
+    requestAnimationFrame(gameLoop);
+  }
 }
 
 // Spawn a new fruit
