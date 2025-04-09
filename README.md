@@ -1,4 +1,4 @@
-# 🍉 Cut The Killer Game
+#  Cut The Killer Game
 
 A  browser-based game inspired by Fruit Ninja to show hatred for the killers of Gaza, built with HTML5 Canvas, CSS, and JavaScript.
 
