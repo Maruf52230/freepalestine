@@ -13,7 +13,8 @@ let knife = { x: 0, y: 0, trail: [] };
 let lastFrameTime = 0;
 let fruitSpawnTimer = 0;
 const fruitSpawnInterval = 1800; // Adjusted from 2000ms to 1800ms due to reduced bomb rate
-let gameStarted = true; // Changed to true to start game immediately
+let gameStarted = false; // Start as false until start button is pressed
+let gamePaused = true; // Start paused
 let isMobile = false;
 let soundEnabled = true;
 let isPortrait = false;
@@ -31,9 +32,21 @@ const restartBtn = document.getElementById("restart-btn");
 const soundToggleElement = document.getElementById("sound-toggle");
 const soundIcon = soundToggleElement.querySelector("i");
 const orientationMessage = document.getElementById("orientation-message");
+const startScreen = document.getElementById("start-screen");
+const startButton = document.getElementById("start-button");
 
 // Load sounds
 const cuttingSoundElement = document.getElementById("cutting-sound");
+
+// Start button event listener
+startButton.addEventListener("click", startGame);
+
+// Function to start the game
+function startGame() {
+  gameStarted = true;
+  gamePaused = false;
+  startScreen.classList.add("hidden");
+}
 
 // Fullscreen button
 const fullscreenBtn = document.createElement('button');
@@ -491,6 +504,69 @@ restartBtn.addEventListener("touchend", function(e) {
   restartGame();
 }, { passive: false });
 
+// Main game loop
+function gameLoop(timestamp) {
+  // Calculate time delta
+  const deltaTime = timestamp - lastFrameTime;
+  lastFrameTime = timestamp;
+  
+  // Clear canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Skip game logic if in portrait mode on mobile
+  if (isMobile && isPortrait) {
+    requestAnimationFrame(gameLoop);
+    return;
+  }
+  
+  // Only update game if it's started and not paused
+  if (gameStarted && !gamePaused && !gameOver) {
+    // Update fruit spawn timer
+    fruitSpawnTimer += deltaTime;
+    
+    // Spawn new fruits at intervals
+    if (fruitSpawnTimer > fruitSpawnInterval) {
+      spawnFruit();
+      fruitSpawnTimer = 0;
+    }
+    
+    // Update and draw fruits
+    for (let i = fruits.length - 1; i >= 0; i--) {
+      const fruit = fruits[i];
+      const shouldRemove = fruit.update(deltaTime);
+      
+      // If fruit is out of bounds and not sliced, remove it and decrease lives
+      if (shouldRemove) {
+        if (!fruit.sliced && !fruit.isBomb) {
+          lives--;
+          updateLives();
+          if (lives <= 0) {
+            endGame();
+          }
+        }
+        fruits.splice(i, 1);
+      } else {
+        // Draw the fruit
+        fruit.draw();
+        
+        // Check for collision with knife
+        if (!fruit.sliced && detectCollision(fruit, knife)) {
+          sliceFruit(fruit);
+        }
+      }
+    }
+  } else {
+    // Even if game is paused, still draw fruits
+    fruits.forEach(fruit => fruit.draw());
+  }
+  
+  // Draw knife regardless of game state
+  drawKnife();
+  
+  // Continue game loop
+  requestAnimationFrame(gameLoop);
+}
+
 // Initialize game
 function init() {
   score = 0;
@@ -499,10 +575,12 @@ function init() {
   fruits = [];
   knife.trail = [];
   fruitSpawnTimer = 0;
-  gameStarted = true;
+  gameStarted = false;
+  gamePaused = true;
   
   scoreElement.textContent = `Score: ${score}`;
   gameOverElement.classList.add('hidden');
+  startScreen.classList.remove('hidden');
   
   // Check if device is mobile
   isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -516,66 +594,6 @@ function init() {
   initializeLives();
   
   // Start game loop
-  requestAnimationFrame(gameLoop);
-}
-
-// Game loop
-function gameLoop(timestamp) {
-  if (gameOver) return;
-  
-  // Skip game logic if in portrait mode on mobile
-  if (isMobile && isPortrait) {
-    requestAnimationFrame(gameLoop);
-    return;
-  }
-  
-  // Calculate delta time
-  const deltaTime = timestamp - lastFrameTime || 0;
-  lastFrameTime = timestamp;
-  
-  // Clear canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-  // Only spawn fruits if game is started
-  if (gameStarted) {
-    // Spawn fruits
-    fruitSpawnTimer += deltaTime;
-    if (fruitSpawnTimer >= fruitSpawnInterval) {
-      spawnFruit();
-      fruitSpawnTimer = 0;
-    }
-  }
-  
-  // Update and draw fruits
-  for (let i = fruits.length - 1; i >= 0; i--) {
-    const fruit = fruits[i];
-    const shouldRemove = fruit.update(deltaTime);
-    
-    // If fruit is out of bounds and not sliced, remove it and decrease lives
-    if (shouldRemove) {
-      if (!fruit.sliced && !fruit.isBomb) {
-        lives--;
-        updateLives();
-        if (lives <= 0) {
-          endGame();
-        }
-      }
-      fruits.splice(i, 1);
-    } else {
-      // Draw the fruit
-      fruit.draw();
-      
-      // Check for collision with knife
-      if (!fruit.sliced && detectCollision(fruit, knife)) {
-        sliceFruit(fruit);
-      }
-    }
-  }
-  
-  // Draw knife
-  drawKnife();
-  
-  // Continue game loop
   requestAnimationFrame(gameLoop);
 }
 
@@ -747,6 +765,8 @@ function drawKnife() {
 // End game
 function endGame() {
   gameOver = true;
+  gameStarted = false;
+  gamePaused = true;
   finalScoreElement.textContent = score;
   gameOverElement.classList.remove('hidden');
 }
