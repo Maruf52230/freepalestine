@@ -33,9 +33,8 @@ const soundToggleElement = document.getElementById("sound-toggle");
 const soundIcon = soundToggleElement.querySelector("i");
 const startScreen = document.getElementById("start-screen");
 const startButton = document.getElementById("start-button");
-
-// Load sounds
 const cuttingSoundElement = document.getElementById("cutting-sound");
+const bombSoundElement = document.getElementById("bomb-sound");
 
 // Start button event listener
 startButton.addEventListener("click", startGame);
@@ -542,7 +541,7 @@ soundToggleElement.addEventListener('touchend', function(e) {
 }, { passive: false });
 
 // Function to play sound with different rates for different fruit types
-function playSound(pitch = 1.0) {
+function playSound(pitch = 1.0, isBomb = false) {
   if (!soundEnabled) return;
   
   try {
@@ -550,7 +549,7 @@ function playSound(pitch = 1.0) {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     
     // Create a source node from the audio element
-    const source = audioContext.createMediaElementSource(cuttingSoundElement.cloneNode());
+    const source = audioContext.createMediaElementSource(isBomb ? bombSoundElement.cloneNode() : cuttingSoundElement.cloneNode());
     
     // Create a gain node to control volume
     const gainNode = audioContext.createGain();
@@ -565,20 +564,20 @@ function playSound(pitch = 1.0) {
     
     // Play the sound
     source.mediaElement.play().catch(error => {
-      console.error("Error playing cutting sound:", error);
-      fallbackPlaySound(pitch);
+      console.error("Error playing sound:", error);
+      fallbackPlaySound(pitch, isBomb);
     });
   } catch (error) {
     console.error("Error setting up audio:", error);
-    fallbackPlaySound(pitch);
+    fallbackPlaySound(pitch, isBomb);
   }
 }
 
 // Fallback method for playing sound
-function fallbackPlaySound(pitch) {
+function fallbackPlaySound(pitch, isBomb = false) {
   try {
     // Clone the audio element for simultaneous sounds
-    const soundClone = cuttingSoundElement.cloneNode();
+    const soundClone = (isBomb ? bombSoundElement : cuttingSoundElement).cloneNode();
     
     // Set the playback rate for pitch adjustment
     soundClone.playbackRate = pitch;
@@ -589,8 +588,9 @@ function fallbackPlaySound(pitch) {
       playPromise.catch(error => {
         console.error("Fallback play error:", error);
         if (soundEnabled) {
-          cuttingSoundElement.currentTime = 0;
-          cuttingSoundElement.play().catch(() => {});
+          const soundElement = isBomb ? bombSoundElement : cuttingSoundElement;
+          soundElement.currentTime = 0;
+          soundElement.play().catch(() => {});
         }
       });
     }
@@ -668,10 +668,10 @@ function sliceFruit(fruit) {
         break;
     }
     
-    playSound(pitchValue);
+    playSound(pitchValue, false);
   } else {
-    // Different sound for bomb (using the same sound but with a very low pitch)
-    playSound(0.5);
+    // Play bomb sound
+    playSound(1.0, true);
   }
   
   // Calculate velocity direction based on knife movement
