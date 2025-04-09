@@ -12,16 +12,15 @@ let fruits = [];
 let knife = { x: 0, y: 0, trail: [] };
 let lastFrameTime = 0;
 let fruitSpawnTimer = 0;
-const fruitSpawnInterval = 1800; // Adjusted from 2000ms to 1800ms due to reduced bomb rate
-let gameStarted = false; // Start as false until start button is pressed
-let gamePaused = true; // Start paused
+const fruitSpawnInterval = 1800;
+let gameStarted = false;
+let gamePaused = true;
 let isMobile = false;
 let soundEnabled = true;
-let isPortrait = false;
 
 // Size adjustments for mobile
-const FRUIT_SIZE_MULTIPLIER = 0.75; // Changed to 75% of original size
-const KNIFE_SIZE_MULTIPLIER = 0.75; // Changed to 75% of original size
+const FRUIT_SIZE_MULTIPLIER = 0.75;
+const KNIFE_SIZE_MULTIPLIER = 0.75;
 
 // DOM elements
 const scoreElement = document.getElementById("score");
@@ -31,7 +30,6 @@ const finalScoreElement = document.getElementById("final-score");
 const restartBtn = document.getElementById("restart-btn");
 const soundToggleElement = document.getElementById("sound-toggle");
 const soundIcon = soundToggleElement.querySelector("i");
-const orientationMessage = document.getElementById("orientation-message");
 const startScreen = document.getElementById("start-screen");
 const startButton = document.getElementById("start-button");
 
@@ -91,108 +89,6 @@ if (localStorage.getItem('fruitCutterSoundEnabled') === 'false') {
   soundIcon.classList.add('fa-volume-mute');
 }
 
-// Check device orientation
-function checkOrientation() {
-  isPortrait = window.innerHeight > window.innerWidth;
-  if (isMobile && isPortrait) {
-    orientationMessage.classList.remove('hidden');
-    if (gameStarted) {
-      // Pause game if it was running
-      gameStarted = false;
-    }
-  } else {
-    orientationMessage.classList.add('hidden');
-  }
-}
-
-// Toggle sound on/off
-function toggleSound() {
-  soundEnabled = !soundEnabled;
-  
-  // Update icon
-  if (soundEnabled) {
-    soundIcon.classList.remove('fa-volume-mute');
-    soundIcon.classList.add('fa-volume-up');
-  } else {
-    soundIcon.classList.remove('fa-volume-up');
-    soundIcon.classList.add('fa-volume-mute');
-  }
-  
-  // Save preference to localStorage
-  localStorage.setItem('fruitCutterSoundEnabled', soundEnabled);
-}
-
-// Add sound toggle event listener
-soundToggleElement.addEventListener('click', toggleSound);
-soundToggleElement.addEventListener('touchend', function(e) {
-  e.preventDefault();
-  toggleSound();
-}, { passive: false });
-
-// Function to play sound with different rates for different fruit types
-function playSound(pitch = 1.0) {
-  if (!soundEnabled) return;
-  
-  try {
-    // Create a new audio context on each sound play
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // Create a source node from the audio element
-    const source = audioContext.createMediaElementSource(cuttingSoundElement.cloneNode());
-    
-    // Create a gain node to control volume
-    const gainNode = audioContext.createGain();
-    gainNode.gain.value = 0.8; // Set volume to 80%
-    
-    // Connect nodes
-    source.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    // Adjust playback rate for pitch
-    source.playbackRate.value = pitch;
-    
-    // Play the sound
-    source.mediaElement.play().catch(error => {
-      console.error("Error playing cutting sound:", error);
-      
-      // Fallback method if the advanced audio method fails
-      fallbackPlaySound(pitch);
-    });
-  } catch (error) {
-    console.error("Error setting up audio:", error);
-    
-    // Use fallback method
-    fallbackPlaySound(pitch);
-  }
-}
-
-// Fallback method for playing sound
-function fallbackPlaySound(pitch) {
-  try {
-    // Clone the audio element for simultaneous sounds
-    const soundClone = cuttingSoundElement.cloneNode();
-    
-    // Set the playback rate for pitch adjustment
-    soundClone.playbackRate = pitch;
-    
-    // Play the sound
-    const playPromise = soundClone.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(error => {
-        console.error("Fallback play error:", error);
-        
-        // Last resort - just try to play the original element
-        if (soundEnabled) {
-          cuttingSoundElement.currentTime = 0;
-          cuttingSoundElement.play().catch(() => {});
-        }
-      });
-    }
-  } catch (error) {
-    console.error("Fallback sound error:", error);
-  }
-}
-
 // Check if device is mobile
 function checkMobile() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
@@ -200,7 +96,6 @@ function checkMobile() {
 
 // Set initial mobile state
 isMobile = checkMobile();
-checkOrientation();
 
 // Load images
 const fruitImages = {
@@ -448,11 +343,6 @@ class Fruit {
 // Update knife position
 function updateKnifePosition(x, y) {
   // Only start the game if in landscape or on desktop
-  if (isMobile && isPortrait) {
-    return;
-  }
-  
-  // Adjust position for mobile touch
   if (isMobile) {
     const rect = canvas.getBoundingClientRect();
     x = x - rect.left;
@@ -512,12 +402,6 @@ function gameLoop(timestamp) {
   
   // Clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-  // Skip game logic if in portrait mode on mobile
-  if (isMobile && isPortrait) {
-    requestAnimationFrame(gameLoop);
-    return;
-  }
   
   // Only update game if it's started and not paused
   if (gameStarted && !gamePaused && !gameOver) {
@@ -585,9 +469,6 @@ function init() {
   // Check if device is mobile
   isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   
-  // Check orientation
-  checkOrientation();
-  
   // Ensure canvas is properly sized
   resizeCanvas();
   
@@ -614,6 +495,88 @@ function spawnFruit() {
       const randomType = types[Math.floor(Math.random() * types.length)];
       fruits.push(new Fruit(randomType));
     }
+  }
+}
+
+// Toggle sound on/off
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  
+  // Update icon
+  if (soundEnabled) {
+    soundIcon.classList.remove('fa-volume-mute');
+    soundIcon.classList.add('fa-volume-up');
+  } else {
+    soundIcon.classList.remove('fa-volume-up');
+    soundIcon.classList.add('fa-volume-mute');
+  }
+  
+  // Save preference to localStorage
+  localStorage.setItem('fruitCutterSoundEnabled', soundEnabled);
+}
+
+// Add sound toggle event listener
+soundToggleElement.addEventListener('click', toggleSound);
+soundToggleElement.addEventListener('touchend', function(e) {
+  e.preventDefault();
+  toggleSound();
+}, { passive: false });
+
+// Function to play sound with different rates for different fruit types
+function playSound(pitch = 1.0) {
+  if (!soundEnabled) return;
+  
+  try {
+    // Create a new audio context on each sound play
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Create a source node from the audio element
+    const source = audioContext.createMediaElementSource(cuttingSoundElement.cloneNode());
+    
+    // Create a gain node to control volume
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = 0.8; // Set volume to 80%
+    
+    // Connect nodes
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    // Adjust playback rate for pitch
+    source.playbackRate.value = pitch;
+    
+    // Play the sound
+    source.mediaElement.play().catch(error => {
+      console.error("Error playing cutting sound:", error);
+      fallbackPlaySound(pitch);
+    });
+  } catch (error) {
+    console.error("Error setting up audio:", error);
+    fallbackPlaySound(pitch);
+  }
+}
+
+// Fallback method for playing sound
+function fallbackPlaySound(pitch) {
+  try {
+    // Clone the audio element for simultaneous sounds
+    const soundClone = cuttingSoundElement.cloneNode();
+    
+    // Set the playback rate for pitch adjustment
+    soundClone.playbackRate = pitch;
+    
+    // Play the sound
+    const playPromise = soundClone.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.error("Fallback play error:", error);
+        if (soundEnabled) {
+          cuttingSoundElement.currentTime = 0;
+          cuttingSoundElement.play().catch(() => {});
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Fallback sound error:", error);
   }
 }
 
@@ -791,9 +754,6 @@ function resizeCanvas() {
 }
 
 window.addEventListener('resize', resizeCanvas);
-window.addEventListener('orientationchange', function() {
-  setTimeout(resizeCanvas, 100);
-});
 
 // Start the game
 init(); 
