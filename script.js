@@ -6,21 +6,21 @@ canvas.height = window.innerHeight;
 
 // Game state
 let score = 0;
-let lives = 7;
+let lives = 4;
 let gameOver = false;
 let fruits = [];
 let knife = { x: 0, y: 0, trail: [] };
 let lastFrameTime = 0;
 let fruitSpawnTimer = 0;
-const fruitSpawnInterval = 1800;
+const fruitSpawnInterval = 1200;
 let gameStarted = false;
 let gamePaused = true;
 let isMobile = false;
 let soundEnabled = true;
 
 // Size adjustments for mobile
-const FRUIT_SIZE_MULTIPLIER = 0.75;
-const KNIFE_SIZE_MULTIPLIER = 0.75;
+const FRUIT_SIZE_MULTIPLIER = 1.8;
+const KNIFE_SIZE_MULTIPLIER = 1.3;
 
 // DOM elements
 const scoreElement = document.getElementById("score");
@@ -167,13 +167,13 @@ class Fruit {
   constructor(type) {
     this.type = type;
     this.isBomb = type === 'bomb';
-    this.width = this.isBomb ? 60 * FRUIT_SIZE_MULTIPLIER : 80 * FRUIT_SIZE_MULTIPLIER; // Reduced to 60% of original size
-    this.height = this.isBomb ? 60 * FRUIT_SIZE_MULTIPLIER : 80 * FRUIT_SIZE_MULTIPLIER; // Reduced to 60% of original size
+    this.width = this.isBomb ? 60 * FRUIT_SIZE_MULTIPLIER : 80 * FRUIT_SIZE_MULTIPLIER;
+    this.height = this.isBomb ? 60 * FRUIT_SIZE_MULTIPLIER : 80 * FRUIT_SIZE_MULTIPLIER;
     this.x = Math.random() * (canvas.width - this.width);
     this.y = canvas.height + this.height;
     this.velocityX = (Math.random() - 0.5) * 4;
-    this.velocityY = -15 - Math.random() * 5;
-    this.gravity = 0.5;
+    this.velocityY = -20 - Math.random() * 5;
+    this.gravity = 0.3;
     this.rotation = 0;
     this.rotationSpeed = (Math.random() - 0.5) * 0.1;
     this.sliced = false;
@@ -210,7 +210,7 @@ class Fruit {
     // Adjust coconut properties if needed
     if (this.type === 'coconut') {
       // Coconut has higher velocity (harder to cut)
-      this.velocityY = -20 - Math.random() * 5;
+      this.velocityY = -30 - Math.random() * 5;
       // Coconut gives more points when cut
       this.pointValue = 20;
     } else {
@@ -454,7 +454,7 @@ function gameLoop(timestamp) {
 // Initialize game
 function init() {
   score = 0;
-  lives = 7;
+  lives = 4;
   gameOver = false;
   fruits = [];
   knife.trail = [];
@@ -482,12 +482,12 @@ function init() {
 function spawnFruit() {
   const types = ['apple', 'orange', 'watermelon', 'pineapple', 'coconut'];
   
-  // Adjust fruit count based on device (fewer on mobile)
-  const maxFruits = isMobile ? 1 : 2;
+  // Adjust fruit count based on device (increased by 1.5x)
+  const maxFruits = isMobile ? 2 : 3; // Increased from 1:2 to 2:3
   const fruitCount = Math.floor(Math.random() * maxFruits) + 1;
   
   for (let i = 0; i < fruitCount; i++) {
-    // Add a bomb with 25% probability (reduced from 40%)
+    // Add a bomb with 25% probability
     if (Math.random() < 0.25) {
       fruits.push(new Fruit('bomb'));
     } else {
